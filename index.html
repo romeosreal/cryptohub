@@ -1,0 +1,324 @@
+<html>
+
+<head>
+	<style>
+		body {
+			margin: 0;
+			background-color: #202020;
+		}
+
+		#load {
+			text-align: center;
+			width: 100%;
+			font-size: 5em;
+			color: #228b22;
+			font-weight: bold;
+		}
+
+		#con {
+			position: absolute;
+			background-color: yellow;
+			width: 10%;
+			height: 64px;
+			color: black;
+			opacity: 0;
+		}
+
+		#wrap {
+			position: relative;
+			left: 10%;
+			width: 80%;
+			padding: 20px;
+			background-color: #030303;
+		}
+
+		#currency_wrap {
+			left: 0;
+			text-align: center;
+			width: 100%;
+			border: 10px solid #141414;
+			height: 60px;
+			border-collapse: collapse;
+			cursor: pointer;
+		}
+
+		#img_wrap {
+			width: 5%;
+			padding: 0;
+			margin: 0;
+		}
+
+		#icon {
+			margin: 0;
+			padding: 0;
+			background-color: #f0f0f0;
+			border: 5px solid #cccccc;
+			width: 100%;
+		}
+
+		#name_wrap,
+		#symb_wrap,
+		#course_wrap,
+		#d_wrap,
+		#cap_wrap {
+			left: 0px;
+			margin: 0;
+			padding: 0;
+			position: relative;
+			padding: 20px;
+			display: inline-block;
+			text-align: center;
+			font-weight: 700;
+		}
+
+		#name_wrap {
+			width: calc(32% - 64px);
+			color: #00fa9a;
+			font-size: 1.5em;
+		}
+
+		#symb_wrap {
+			text-align: left;
+			left: 5%;
+			width: 10%;
+			color: #006400;
+			font-size: 2em;
+		}
+
+		#course_wrap {
+			width: 10%;
+			color: #aafa9a;
+			font-size: 1.5em;
+		}
+
+		#d_wrap {
+			width: 10%;
+			font-size: 1.5em;
+		}
+
+		#d7_wrap {
+			width: 10%;
+			font-size: 1.5em;
+		}
+
+		#cap_wrap {
+			left: -4%;
+			width: 10%;
+			font-size: 1.6em;
+			color: #9acd32;
+			text-align: center;
+		}
+
+		#psevdo_img {
+			font-weight: bold;
+			color: #556b2f;
+			background-color: #030303;
+			border: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id='con'>
+
+	</div>
+	<div id='wrap'>
+		<table id="currency_wrap" style='cursor: default'>
+			<tbody>
+				<tr>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr>
+					<td id="img_wrap">
+						<div id='psevdo_img' style='font-size: 2.4em'>
+							Icon
+						</div>
+					</td>
+					<td id="symb_wrap">Symbol</td>
+					<td id="name_wrap">Name</td>
+					<td id="cap_wrap">Market cap</td>
+					<td id="cap_wrap" style="left: -12px">Price</td>
+					<td id="d_wrap" style="color: green;">Change 24h</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div id='load'>
+		System is loading..
+	</div>
+	<script>
+		const SW = 1536;
+		const DK = 0.2;
+
+		function normalizedText() {
+			let k = (window.innerWidth / SW) + DK;
+			let elems = document.getElementsByTagName('td');
+			let el;
+			for (let i = elems.length; i--;) {
+				el = elems[i];
+				if (el.id !== undefined) {
+					switch (el.id) {
+						case "symb_wrap":
+							elems[i].style.fontSize = 2 * k + "em";
+							break;
+						case "course_wrap":
+							elems[i].style.fontSize = 1.5 * k + "em";
+							break;
+						case "cap_wrap":
+							elems[i].style.fontSize = 1.6 * k + "em";
+							break;
+						case "d_wrap":
+							elems[i].style.fontSize = 1.5 * k + "em";
+							break;
+						case "name_wrap":
+							elems[i].style.fontSize = 1.5 * k + "em";
+							break;
+						case "load":
+							elems[i].style.fontSize = 5 * k + "em";
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			elems = document.getElementsByTagName('div');
+			for (let i = elems.length; i--;) {
+				el = elems[i];
+				if (el.id !== undefined) {
+					if (el.id == 'psevdo_img') {
+						elems[i].style.fontSize = 2.4 * k + "em";
+					}
+				}
+			}
+			setTimeout(normalizedText, 100);
+		}
+
+		let cur = [];
+		let global_pos = 0;
+
+		function appendContainer(number) {
+			let k = window.innerWidth / SW;
+			load.style.fontSize = 5 * k + "em";
+			var div1 = document.createElement("table");
+			div1.id = "currency_wrap";
+			div1.innerHTML += "<tr>";
+			var div2 = document.createElement("td");
+			div2.id = "name_wrap";
+			div2.style.fontSize = 1.5 * k + "em";
+			var div3 = document.createElement("td");
+			div3.id = "symb_wrap";
+			div3.style.fontSize = 2 * k + "em";
+			var div4 = document.createElement("td");
+			div4.id = "img_wrap";
+			var div5 = document.createElement("td");
+			div5.id = "course_wrap";
+			div5.innerHTML = Math.floor(cur[number]["price"] * 100) / 100;
+			if (div5.innerHTML < 2) {
+				div5.innerHTML = Math.floor(cur[number]["price"] * 1000) / 1000;
+				if (div5.innerHTML < 0.2) {
+					div5.innerHTML = Math.floor(cur[number]["price"] * 10000) / 10000;
+				}
+			}
+			div5.style.fontSize = 1.5 * k + "em";
+			var div6 = document.createElement("td");
+			div6.id = "d_wrap";
+			div6.style.fontSize = 1.5 * k + "em";
+			div6.innerHTML = cur[number]["1d"];
+			if (div6.innerHTML < 0) {
+				div6.style.color = 'red';
+			} else {
+				div6.style.color = 'green';
+			}
+			var div7 = document.createElement("td");
+			div7.id = "cap_wrap";
+			div7.style.fontSize = 1.6 * k + "em";
+			div7.innerHTML = Math.floor(cur[number]["cap"]);
+			div2.innerHTML = cur[number]["name"];
+			div3.innerHTML = cur[number]["symbol"];
+			div4.appendChild(cur[number]["image"]);
+			div1.appendChild(div4);
+			div1.appendChild(div3);
+			div1.appendChild(div2);
+			div1.appendChild(div7);
+			div1.appendChild(div5);
+			div1.appendChild(div6);
+			div1.innerHTML += "</tr>";
+			div1.num = number;
+			div1.onclick = function() {
+				let el = cur[this.num];
+				let win = window.open("about:blank", el["name"],
+					"width=" + screen.width / 3 + ",height=" + screen.height);
+				win.moveTo((global_pos % 3) * screen.width / 3, 0);
+				global_pos++;
+				win.document.body.style.backgroundColor = "#030303";
+				win.document.body.style.margin = 0;
+				let header = win.document.createElement("div");
+				header.style.width = '100%';
+				header.style.height = '32%';
+				header.style.backgroundColor = "#111111";
+				let img = win.document.createElement('div');
+				img.appendChild(el['image']);
+				img.style.backgroundColor = '#f0f0f0';
+				img.style.width = '64px';
+				img.style.border = '5px solid #cccccc';
+				let name = win.document.createElement('div');
+				name.innerHTML = el["price"] + "$";
+				name.style.color = "BlackGreen";
+				name.style.fontWeight = "bold";
+				name.style.fontSize = '3em';
+				name.style.position = 'relative'
+				name.style.display = 'inline-block';
+				name.style.left = '64px';
+				header.appendChild(img);
+				win.document.body.appendChild(header);
+			}
+			wrap.appendChild(div1);
+			if (number == 99) {
+				normalizedText();
+				console.log(performance.now());
+				load.style.display = 'none';
+				load.style.fontSize = 'none';
+			}
+		};
+
+		function loaded(xhr) {
+			var obj = eval("(function(){return " + xhr.responseText + ";})()");
+			for (let num = 0; num < obj.length; num++) {
+				cur[num] = {};
+				cur[num]["cap"] = obj[num].market_cap_usd;
+				cur[num]["price"] = obj[num].price_usd;
+				cur[num]["name"] = obj[num].name;
+				cur[num]["symbol"] = obj[num].symbol;
+				cur[num]["1d"] = obj[num].percent_change_24h;
+				cur[num]["7d"] = obj[num].percent_change_7d;
+				cur[num]["image"] = new Image();
+				cur[num]["image"].src = "https://files.coinmarketcap.com/static/img/coins/64x64/" + obj[num].id + ".png";
+				cur[num]["image"].id = 'icon';
+				cur[num]["image"].onload = appendContainer(num);
+			}
+		};
+
+		function init() {
+			let xhr = new XMLHttpRequest();
+			xhr.open('GET', 'https://api.coinmarketcap.com/v1/ticker/', true);
+			xhr.send();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState != 4) return;
+				if (xhr.status != 200) {
+					console.error((xhr.status == 0 ? "No internet connection" : xhr.status) + "\nGlobal loading error. Stop all");
+					if (xhr.status == 0) {
+						load.innerHTML = 'You are lost internet connection';
+						load.style.fontSize = '3em';
+					}
+				} else {
+					loaded(xhr);
+				}
+			};
+		};
+
+		window.addEventListener('load', init);
+	</script>
+</body>
+
+</html>
